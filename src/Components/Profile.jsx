@@ -13,14 +13,13 @@ const Profile = () => {
   const [repodata, setRepoData] = useState({});
 
   const { dta } = useContext(Context);
-  const [dt,setDt] = dta;
+  const [dt] = dta;
 
   let isProfileRendered = useRef(false);
 
   const preload = async () => {
     try {
       setData(await fetchProfile(dt));
-     console.log(dt);
       setRepoData(await fetchRepo(dt));
     } catch (err) {
       console.log(err);
@@ -42,7 +41,6 @@ const Profile = () => {
       };
     }
   }, []);
-
 
   return (
     <section>

@@ -1,6 +1,6 @@
 const ch_data = async (name) => {
   const months = [];
-  const api_url = import.meta.env.VITE_APP_GITHUB_API_URL + name + "/repos";
+  const api_url = import.meta.env.VITE_APP_GITHUB_PROFILE_URL + name + "/repos";
   try {
     const res = await fetch(api_url);
     const dict = {};

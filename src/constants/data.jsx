@@ -56,7 +56,7 @@ const navLinks = [
   },
 
   {
-    path: "/tables",
+    path: "/repositories",
     icon: (
       <svg
         width="24"
@@ -103,7 +103,7 @@ const navLinks = [
   //       </defs>
   //     </svg>
   //   ),
-  //   name: "tables",
+  //   name: "followers",
   // },
   // {
   //   path: "/kanban",

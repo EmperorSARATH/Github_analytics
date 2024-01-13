@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { fetchRepo } from "../../api/responses";
 import { chart_data, months } from "../../constants/data";
 import { ch_data } from "./ChartData";
@@ -11,35 +11,45 @@ import {
   YAxis,
   Tooltip,
 } from "recharts";
+import { Context } from "../../contexts/Context";
+
 const Linechart = () => {
   const [repodata, setRepoData] = useState({});
   const [plotdata, setplotdata] = useState({});
+
+  const { dta } = useContext(Context);
+  const [dt, setDt] = dta;
   const createData = async () => {
-    setplotdata(await ch_data("EmperorSarath"));
+    setplotdata(await ch_data(dt));
   };
 
-  let isProfileRendered = useRef(false);
+  console.log(plotdata);
+  // let isProfileRendered = useRef(false);
 
   const preload = async () => {
     try {
-      setRepoData(await fetchRepo("EmperorSarath"));
+      setRepoData(await fetchRepo(dt));
     } catch (err) {
       console.log(err);
     }
   };
 
   useEffect(() => {
-    if (isProfileRendered.current === false) {
-      createData();
-      preload();
-
-      console.log(isProfileRendered.current);
-
-      return () => {
-        isProfileRendered.current = true;
-      };
+    async function test() {
+      await createData();
+      await preload();
     }
-  }, []);
+
+    test();
+    // if (isProfileRendered.current === false) {
+    //   createData();
+    //   preload();
+    //   console.log(isProfileRendered.current);
+    //   return () => {
+    //     isProfileRendered.current = true;
+    //   };
+    // }
+  }, [dt]);
 
   return (
     <LineChart width={700} height={300} data={plotdata}>

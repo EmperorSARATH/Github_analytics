@@ -1,5 +1,6 @@
-const fetchProfile = async (name="EmperorSarath") => {
-  const api_url = import.meta.env.VITE_APP_GITHUB_API_URL + name;
+const fetchProfile = async (name) => {
+  console.log(name);
+  const api_url = import.meta.env.VITE_APP_GITHUB_PROFILE_URL + name;
   try {
     const res = await fetch(api_url);
 
@@ -16,8 +17,8 @@ const fetchProfile = async (name="EmperorSarath") => {
   }
 };
 
-const fetchRepo = async (name="EmperorSarath") => {
-  const api_url = import.meta.env.VITE_APP_GITHUB_API_URL + name + "/repos";
+const fetchRepo = async (name) => {
+  const api_url = import.meta.env.VITE_APP_GITHUB_PROFILE_URL + name + "/repos";
   try {
     const res = await fetch(api_url);
     if (!res.ok) {

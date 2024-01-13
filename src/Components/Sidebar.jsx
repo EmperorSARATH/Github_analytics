@@ -5,7 +5,6 @@ import { avatar, logo, navLinks } from "../constants/data";
 const Sidebar = () => {
   const path = window.location.href;
 
-
   const tab = path.split("/")[3];
 
   const [activeLink, setActiveLink] = useState(tab || "dashboard");
