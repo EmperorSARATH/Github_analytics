@@ -1,21 +1,17 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Context } from "../../contexts/Context";
-import { fetchProfile } from "../../api/responses";
 
 const Searchbox = () => {
   const [user, setUser] = useState("");
+  const [user_changed, setUserChanged] = useState(false);
+  const [count, setCount] = useState(0);
   const [options, setOptions] = useState([]);
-
-  const { repo_user } = useContext(Context);
-  const [user_name, setUsername] = repo_user;
 
   const { dta } = useContext(Context);
   const [dt, setDt] = dta;
- 
 
-  async function searchList(user){
+  const searchList = async (user) => {
     try {
-      console.log("yoo");
       const res = await fetch(
         import.meta.env.VITE_APP_GITHUB_API_URL +
           "search/users?q=" +
@@ -30,75 +26,46 @@ const Searchbox = () => {
       //new Promise((resolve) => setTimeout(resolve, 1000));
       const data = await res.json();
 
-      setOptions(await data.items);
+      setOptions(data.items);
+      setCount(data.total_count);
     } catch (err) {
       console.log(err);
     }
   };
- 
 
-
-  function debounce (func,t){
-    let timer;
-    console.log(timer);
-    return function(...args){
-      clearTimeout(timer);
-      timer= setTimeout(()=>{
-         func.apply(this,args);
-      },t)
-    }
-  }
-
-
-  // console.log(options);
-
-  function handleChange(e){
-    const dbhandler =  debounce(searchList,2000);
-
-      setUser(e.target.value);
-
-
-      // searchList(e.target.value);
-     if(user.length>4 && user.length < 25){
-        dbhandler(e.target.value);
-     
-     }
-        
-    
+  const handleChange = (e) => {
+    setUser(e.target.value);
   };
 
   const handleUserChange = (value) => {
     setUser(value);
 
+    setUserChanged(true);
     setOptions([]);
   };
-  // console.log(user);
-  const handleSubmit =  (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // setUsername(user);
     setDt(user);
-
-   setUser("");
-    console.log(user);
-    // try {
-    //   const res = await fetchProfile(user);
-    //   if (!res.ok) {
-    //     throw new Error("Failed to fetch data");
-    //   }
-
-    //   const data = await res.json();
-
-    //   setDt(data);
-    // } catch (err) {
-    //   console.log(err);
-    // }
   };
 
-  // console.log(user_name);
+  useEffect(() => {
+    //console.log(user);
+    const timer = setTimeout(() => {
+      if (user !== "" && user_changed === false) {
+        searchList(user);
+        return;
+      }
+    }, 1000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [user]);
 
   return (
-    <section>
+    <section className="relative z-50">
       <form
         className="relative flex cursor-pointer items-center rounded-full bg-[#f87171]"
         onSubmit={handleSubmit}
@@ -111,6 +78,7 @@ const Searchbox = () => {
           className="flex h-10 w-[300px] items-center rounded-l-full border-2 border-r-0 border-t-2 p-2 px-3 text-sm text-slate-500 focus:border-slate-300 focus:outline-none max-md:hidden"
           value={user}
           onChange={handleChange}
+          onFocus={() => setUserChanged(false)}
         />
         <button title="Search" type="submit">
           <svg
@@ -134,8 +102,7 @@ const Searchbox = () => {
           {Object.entries(options).map((item, index) => {
             return (
               <div
-                className="my-2 flex w-full items-center  rounded-full bg-slate-50 p-2 px-3"
-                id="user"
+                className="my-2 flex w-full items-center rounded-full bg-slate-50 p-2 px-3"
                 key={index}
               >
                 <button
@@ -154,6 +121,25 @@ const Searchbox = () => {
             );
           })}
         </ul>
+      )}
+      {count == 0 && user.length > 4 && (
+        <div className="absolute my-2 flex w-[300px] items-center gap-x-2 rounded-full bg-slate-50 p-2 px-3">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="h-8 w-8 text-slate-700"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.182 16.318A4.486 4.486 0 0 0 12.016 15a4.486 4.486 0 0 0-3.198 1.318M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z"
+            />
+          </svg>
+          <span className="text-base text-slate-700">No profiles found</span>
+        </div>
       )}
     </section>
   );

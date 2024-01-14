@@ -1,45 +1,37 @@
-import { currencies } from "../constants/data";
 import { Barchart, Linechart } from ".";
-import { Link } from "react-router-dom";
 import { useContext, useEffect, useRef, useState } from "react";
-
-import Skeleton from "react-loading-skeleton";
 import { Context } from "../contexts/Context";
 import Searchbox from "./search/Searchbox";
-import { fetchProfile, fetchRepo } from "../api/responses";
+import { fetchProfile } from "../api/responses";
+
+import Skeleton from "react-loading-skeleton";
 
 const Home = () => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState({});
-
-  const { repo_user } = useContext(Context);
-  const [user_name] = repo_user;
+  const isProfileRendered = useRef(false);
 
   const { dta } = useContext(Context);
-  const [dt, setDt] = dta;
+  const [dt] = dta;
 
   console.log("username=", dt);
-  console.log(data);
 
   const preload = async () => {
     try {
       const res = await fetchProfile(dt);
 
       setData(await res);
-      //setDt(dt);
     } catch (err) {
       console.log(err);
     }
   };
-  console.log(data);
-
-  const isProfileRendered = useRef(false);
 
   useEffect(() => {
-    preload();
     setTimeout(() => {
       setLoading(false);
     }, 1000);
+
+    preload();
 
     if (isProfileRendered.current === false) {
       console.log(isProfileRendered.current);
@@ -49,15 +41,6 @@ const Home = () => {
       };
     }
   }, [dt]);
-
-  // console.log(newDt);
-
-  // console.log(name);
-  // console.log(avatar);
-
-  // const arr = [1, 2, 3, 4];
-
-  // console.log(data);
 
   return (
     <section className="h-screen">
@@ -70,12 +53,6 @@ const Home = () => {
                 Dashboard
               </span>
               <Searchbox />
-              {/* <Link
-                to="/signin"
-                className="flex items-center justify-center rounded-md bg-indigo-500 p-2 px-4 font-semibold leading-5"
-              >
-                <span className="text-white">Login</span>
-              </Link> */}
             </div>
             <div className="mt-10 w-full">
               <ul className="flex flex-wrap gap-x-6">
@@ -143,11 +120,10 @@ const Home = () => {
                 </li>
               </ul>
             </div>
-          </div>
-          <div className="my-10 border-b-8 border-b-white"></div>
-          <div className="mt-10 flex w-full justify-between">
-            <Linechart />
-            <Barchart />
+            <div className="mt-10 flex w-full justify-between">
+              <Linechart />
+              <Barchart />
+            </div>
           </div>
         </div>
       )}

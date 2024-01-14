@@ -1,11 +1,11 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import ProfileCard from "./ProfileCard";
-import { getRepo, projectList } from "../constants/data";
 import Skeleton from "react-loading-skeleton";
 import { fetchProfile, fetchRepo } from "../api/responses";
 import { Context } from "../contexts/Context";
 import projectbg from "../assets/project-bg.jpg";
+import Searchbox from "./search/Searchbox";
 
 const Profile = () => {
   const [loading, setLoading] = useState(true);
@@ -20,6 +20,13 @@ const Profile = () => {
   const preload = async () => {
     try {
       setData(await fetchProfile(dt));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const preloadrepo = async () => {
+    try {
       setRepoData(await fetchRepo(dt));
     } catch (err) {
       console.log(err);
@@ -27,30 +34,32 @@ const Profile = () => {
   };
 
   useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+
+    preload();
+    preloadrepo();
+
     if (isProfileRendered.current === false) {
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
-
-      preload();
-
       console.log(isProfileRendered.current);
 
       return () => {
         isProfileRendered.current = true;
       };
     }
-  }, []);
+  }, [dt]);
 
   return (
     <section>
       {loading && <Skeleton className="h-screen" />}
-      {!loading && data && (
+      {!loading && data && repodata && (
         <div className="p-10">
-          <div className="flex justify-between">
+          <div className="flex items-center justify-between">
             <span className="text-lg font-semibold leading-5 text-slate-800">
               Profile
             </span>
+            {/* <Searchbox /> */}
             <Link
               to={data.html_url}
               target="_blank"
@@ -62,14 +71,8 @@ const Profile = () => {
 
           <div className="grid grid-cols-1 py-5">
             <ProfileCard data={data} />
-            {/* <div className="mr-3 rounded-lg bg-indigo-500 p-5">
-              <h1>Storage</h1>
-            </div>
-            <div className="rounded-lg bg-indigo-500 p-10">
-              <h1>Upload</h1>
-            </div> */}
 
-            <div className="mr-3 mt-4 border-2 bg-white p-5">
+            <div className="mt-4 border-2 bg-white p-5">
               All Projects
               <div className="mt-5 flex flex-col">
                 <h1>

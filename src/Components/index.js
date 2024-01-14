@@ -7,6 +7,8 @@ import Tables from "./Repositories";
 import Github from "./Github";
 import Profile from "./Profile";
 import Login from "./Login";
+import Repositories from "./Repositories";
+import Followers from "./Followers";
 
 export {
   Sidebar,
@@ -18,4 +20,6 @@ export {
   Github,
   Profile,
   Login,
+  Repositories,
+  Followers,
 };

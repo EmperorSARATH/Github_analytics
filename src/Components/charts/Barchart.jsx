@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -14,25 +14,26 @@ import {
 import { ch_data } from "./ChartData";
 
 import { chart_data } from "../../constants/data";
-import { Context } from "../../contexts/Context";
-
 
 const Barchart = () => {
-  const {dta} = useContext(Context);
-  const [dt, setDt] = dta;
   const [plotdata, setplotdata] = useState({});
   const createData = async () => {
-    setplotdata(await ch_data(dt));
+    setplotdata(await ch_data("EmperorSarath"));
   };
 
- 
+  let isProfileRendered = useRef(false);
   useEffect(() => {
-  
+    if (isProfileRendered.current === false) {
       createData();
       //preload();
 
+      console.log(isProfileRendered.current);
 
-    }, [plotdata]);
+      return () => {
+        isProfileRendered.current = true;
+      };
+    }
+  }, []);
   return (
     <BarChart width={500} height={300} data={plotdata}>
       <XAxis dataKey="month" label={"month"} />

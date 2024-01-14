@@ -1,5 +1,4 @@
 const fetchProfile = async (name) => {
-  console.log(name);
   const api_url = import.meta.env.VITE_APP_GITHUB_PROFILE_URL + name;
   try {
     const res = await fetch(api_url);

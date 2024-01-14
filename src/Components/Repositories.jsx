@@ -2,71 +2,94 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { fetchRepo } from "../api/responses";
 import { Context } from "../contexts/Context";
 import { Link } from "react-router-dom";
+import Skeleton from "react-loading-skeleton";
+import Searchbox from "./search/Searchbox";
+
 const Repositories = () => {
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState({});
+  const isProfileRendered = useRef(false);
+
   const { dta } = useContext(Context);
   const [dt, setDt] = dta;
-  const [repo, setRepo] = useState({});
-  async function apicall() {
-    setRepo(await fetchRepo(dt));
-  }
-  let refcall = useRef(false);
+
+  const preload = async () => {
+    try {
+      const res = await fetchRepo(dt);
+
+      setData(await res);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
-    if (refcall.current === false) {
-      apicall();
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+
+    preload();
+
+    if (isProfileRendered.current === false) {
+      console.log(isProfileRendered.current);
     }
 
-    refcall.current = true;
-
     return () => {
-      refcall.current = true;
+      isProfileRendered.current = true;
     };
-  }, [refcall]);
+  }, [dt]);
 
-  console.log(repo);
   return (
-    <div className="overflow-x-auto p-10 ">
-      <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
-        <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-          <tr>
-            <th scope="col" className="px-6 py-3">
-              Repository name
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Language used
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Visibility
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Visit link
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {Array.from(repo).map((i, index) => {
-            return (
-              <tr className="border-b odd:bg-white even:bg-gray-50 dark:border-gray-700 odd:dark:bg-gray-900 even:dark:bg-gray-800">
-                <td className=" px-6 py-4">{i.name}</td>
+    <section className="h-screen">
+      {loading && <Skeleton className="h-screen" />}
+      {!loading && data && (
+        <div className="overflow-x-auto p-10">
+          <div className="flex items-center justify-between">
+            <span className="text-lg font-semibold leading-5 text-slate-800">
+              Repositories
+            </span>
+            {/* <Searchbox /> */}
+          </div>
+          <div className="mt-10 max-h-[550px] w-full overflow-y-auto">
+            <table className="w-full border-2 text-center text-sm text-gray-500">
+              <thead className="sticky top-0 z-50 bg-slate-600 text-xs uppercase text-white">
+                <tr>
+                  <th className="px-6 py-3">Repository name</th>
+                  <th className="px-6 py-3">Language used</th>
+                  <th className="px-6 py-3">Visibility</th>
+                  <th className="px-6 py-3">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Array.from(data).map((i, index) => {
+                  return (
+                    <tr
+                      className="font-medium capitalize text-slate-800 odd:bg-white even:bg-slate-200"
+                      key={index}
+                    >
+                      <td className="px-6 py-6">{i.name}</td>
 
-                <td className=" px-6 py-4">{i.language}</td>
+                      <td className="px-6 py-6">{i.language}</td>
 
-                <td className=" px-6 py-4">{i.visibility}</td>
-                <td className=" px-6 py-4">
-                  <Link
-                    to={i.html_url}
-                    target="_blank"
-                    className="bg-teal-500 p-2 text-white shadow-xl"
-                  >
-                    View Repo
-                  </Link>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+                      <td className="px-6 py-6">{i.visibility}</td>
+                      <td className="px-6 py-6">
+                        <Link
+                          to={i.html_url}
+                          target="_blank"
+                          className="bg-[#26927c] p-2 normal-case text-white drop-shadow-xl hover:bg-[#26927c] hover:drop-shadow-2xl"
+                        >
+                          View repository
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </section>
   );
 };
 

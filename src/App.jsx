@@ -1,17 +1,14 @@
+import { useState } from "react";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import {
   Sidebar,
-  Navbar,
   Home,
-  Tables,
-  Github,
   Profile,
   Login,
+  Repositories,
+  Followers,
 } from "./components";
 import { Context } from "./contexts/Context";
-import { useState } from "react";
-import Searchbox from "./components/search/Searchbox";
-import Repositories from "./components/Repositories";
 
 const Layout = () => {
   return (
@@ -20,8 +17,6 @@ const Layout = () => {
         <Sidebar />
       </div>
       <div className="flex h-screen w-full flex-col overflow-y-auto  pl-72">
-        {/* <Navbar /> */}
-        {/* <div className="border-b-8 border-b-white"></div> */}
         <Outlet />
       </div>
       {/* <div className="h-screen flex-auto bg-white pl-72"></div> */}
@@ -43,12 +38,8 @@ const router = createBrowserRouter([
         element: <Repositories />,
       },
       {
-        path: "/tables",
-        element: <Tables />,
-      },
-      {
-        path: "/github",
-        element: <Github />,
+        path: "/followers",
+        element: <Followers />,
       },
       {
         path: "/profile",
