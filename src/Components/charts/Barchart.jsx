@@ -35,12 +35,14 @@ const Barchart = () => {
     }
   }, []);
   return (
-    <BarChart width={500} height={300} data={plotdata}>
-      <XAxis dataKey="month" label={"month"} />
+   
+    <BarChart width={500} height={200} data={plotdata}>
+      <XAxis dataKey="month" label={"month"} minTickGap={50} />
       <YAxis dataKey="count" label={"count"} />
-      <Tooltip />
-      <Bar dataKey="count" fill="#8884d8" />
+      <Tooltip  />
+      <Bar dataKey="count" fill="#35B774 " />
     </BarChart>
+   
   );
 };
 

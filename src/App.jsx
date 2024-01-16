@@ -9,6 +9,7 @@ import {
   Followers,
 } from "./Components";
 import { Context } from "./contexts/Context";
+import Following from "./Components/Following";
 
 const Layout = () => {
   return (
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
         element: <Followers />,
       },
       {
+        path: "/following",
+        element: <Following />,
+      },
+      {
         path: "/profile",
         element: <Profile />,
       },
@@ -57,8 +62,8 @@ const router = createBrowserRouter([
   },
 ]);
 const App = () => {
-  const [dt, setDt] = useState("codermedia");
-  const [user_name, setUsername] = useState("codermedia");
+  const [dt, setDt] = useState("EmperorSARATH");
+  const [user_name, setUsername] = useState("EmperorSARATH");
 
   return (
     <div className="App">

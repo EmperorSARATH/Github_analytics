@@ -1,17 +1,17 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { fetchFollowers, fetchProfile } from "../api/responses";
+import {  fetchFollowing, fetchProfile } from "../api/responses";
 import { Context } from "../contexts/Context";
 import { Link } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import Searchbox from "./search/Searchbox";
 
-const Followers = () => {
+const Following = () => {
 
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState({});
   const [repodata, setRepoData] = useState({});
-  const [followers, setFollowers] = useState({});
+  const [following, setFollowing] = useState({});
 
   const { dta } = useContext(Context);
   const [dt] = dta;
@@ -21,7 +21,7 @@ const Followers = () => {
   const preload = async () => {
     try {
       setData(await fetchProfile(dt));
-      setFollowers(await fetchFollowers(dt));
+      setFollowing(await fetchFollowing(dt));
     } catch (err) {
       console.log(err);
     }
@@ -59,10 +59,10 @@ const Followers = () => {
         <div className="overflow-x-auto p-10">
           <div className="flex items-center justify-between">
             <span className="text-lg font-semibold leading-5 text-slate-800">
-              Followers
+              following
             </span>
 
-            <button className="bg-purple-400 p-6 hover:bg-yellow-300">{data.followers}</button>
+            <button className="bg-purple-400 p-6 hover:bg-yellow-300">{data.following}</button>
             {/* <Searchbox /> */}
           </div>
           <div className="mt-10 max-h-[550px] w-full overflow-y-auto">
@@ -76,7 +76,7 @@ const Followers = () => {
                 </tr>
               </thead>
               <tbody>
-                {Array.from(followers).map((i, index) => {
+                {Array.from(following).map((i, index) => {
                   return (
                     <tr
                       className="font-medium capitalize text-slate-800 odd:bg-white even:bg-slate-200"
@@ -110,4 +110,4 @@ const Followers = () => {
 
 };
 
-export default Followers;
+export default Following;
